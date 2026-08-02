@@ -1,9 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
-import { HiOutlineVideoCamera, HiOutlineSearch, HiOutlinePlay, HiOutlineArrowLeft } from 'react-icons/hi';
+import { 
+    HiOutlineVideoCamera, 
+    HiOutlineSearch, 
+    HiOutlineArrowLeft,
+    HiOutlineAcademicCap,
+    HiOutlineSparkles,
+    HiOutlineFilm
+} from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
-
 const semesters = [1, 2, 3, 4, 5, 6];
 
 export default function VideoLibrary() {
@@ -29,7 +35,7 @@ export default function VideoLibrary() {
                     const errorData = await res.json();
                     errorMsg = errorData.error || errorMsg;
                 } catch (e) {
-                    // Ignore JSON parse error if response is not JSON
+                    // Non-JSON error fallback
                 }
                 throw new Error(errorMsg);
             }
@@ -38,7 +44,6 @@ export default function VideoLibrary() {
             if (Array.isArray(data)) {
                 setVideos(data);
             } else if (data && Array.isArray(data.data)) {
-                // Fallback just in case backend wraps response
                 setVideos(data.data);
             } else {
                 setVideos([]);
@@ -52,7 +57,6 @@ export default function VideoLibrary() {
         }
     };
 
-    // Extract unique subjects for chips
     const subjects = useMemo(() => {
         const subs = new Set();
         (videos || []).forEach(v => {
@@ -116,77 +120,82 @@ export default function VideoLibrary() {
             setActiveVideo(null);
             setVideoTransition(false);
         }, 200);
-    }
+    };
 
-    // Queue for the watch mode sidebar (filtering out active video)
     const queueVideos = filtered.filter(v => v.id !== activeVideo?.id);
 
     return (
-        <div className="page-enter pb-16 space-y-6 max-w-[1600px] mx-auto">
-            {/* Header & Search */}
+        <div className="min-h-screen bg-slate-50/60 text-slate-900 pb-24 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto space-y-8">
+            
+            {/* Header & Search Bar */}
             {!activeVideo && (
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pt-4">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                        <span className="bg-red-600 text-white p-2 rounded-xl">
-                            <HiOutlineVideoCamera className="w-6 h-6" />
-                        </span>
-                        NodeTube
-                    </h1>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-6 border-b border-slate-200/80 pb-6">
+                    <div>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-50 border border-rose-100 rounded-full mb-2">
+                            <HiOutlineSparkles className="w-3.5 h-3.5 text-rose-600" />
+                            <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wide">Video Streaming Vault</span>
+                        </div>
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                            <span className="bg-gradient-to-tr from-rose-600 to-red-500 text-white p-2.5 rounded-2xl shadow-md shadow-rose-500/20">
+                                <HiOutlineVideoCamera className="w-6 h-6" />
+                            </span>
+                            NodeTube
+                        </h1>
+                    </div>
+
                     <div className="relative w-full md:w-96">
                         <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search videos..."
-                            className="w-full pl-11 pr-4 py-3 bg-slate-100 border-none rounded-full text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
+                            placeholder="Search video lectures, subjects..."
+                            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200/80 rounded-2xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 shadow-sm transition-all"
                         />
                     </div>
                 </div>
             )}
 
-            {/* Filter Chips - Only show when NOT in watch mode */}
+            {/* Filter Chips - Hide during watch mode */}
             {!activeVideo && (
-                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-hide snap-x">
                     <button
                         onClick={() => { setFilterSemester(null); setFilterSubject(null); }}
-                        className={`snap-start whitespace-nowrap px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                        className={`snap-start whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                             !filterSemester && !filterSubject
-                                ? 'bg-slate-900 text-white'
-                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                                : 'bg-white text-slate-600 border-slate-200/80 hover:border-slate-300 hover:text-slate-900'
                         }`}
                     >
-                        All
+                        All Videos
                     </button>
                     
-                    <div className="w-px h-6 bg-slate-200 mx-1 shrink-0"></div>
+                    <div className="w-px h-5 bg-slate-200 mx-1 shrink-0" />
 
                     {semesters.map(s => (
                         <button
                             key={`sem-${s}`}
                             onClick={() => { setFilterSemester(s); setFilterSubject(null); }}
-                            className={`snap-start whitespace-nowrap px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                            className={`snap-start whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                                 filterSemester === s && !filterSubject
-                                    ? 'bg-slate-900 text-white'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm shadow-rose-500/20'
+                                    : 'bg-white text-slate-600 border-slate-200/80 hover:border-slate-300 hover:text-slate-900'
                             }`}
                         >
                             Semester {s}
                         </button>
                     ))}
 
-                    {subjects.length > 0 && (
-                        <div className="w-px h-6 bg-slate-200 mx-1 shrink-0"></div>
-                    )}
+                    {subjects.length > 0 && <div className="w-px h-5 bg-slate-200 mx-1 shrink-0" />}
 
                     {subjects.map(sub => (
                         <button
                             key={`sub-${sub}`}
                             onClick={() => setFilterSubject(sub)}
-                            className={`snap-start whitespace-nowrap px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                            className={`snap-start whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                                 filterSubject === sub
-                                    ? 'bg-slate-900 text-white'
-                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm shadow-rose-500/20'
+                                    : 'bg-white text-slate-600 border-slate-200/80 hover:border-slate-300 hover:text-slate-900'
                             }`}
                         >
                             {sub}
@@ -199,21 +208,21 @@ export default function VideoLibrary() {
             {loading ? (
                 activeVideo ? (
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6">
-                        <div className="aspect-video bg-slate-100 rounded-2xl animate-pulse" />
+                        <div className="aspect-video bg-slate-200/60 rounded-3xl animate-pulse" />
                         <div className="space-y-4">
-                            {[1, 2, 3, 4].map(i => <div key={i} className="h-28 bg-slate-100 rounded-xl animate-pulse" />)}
+                            {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200/60 rounded-2xl animate-pulse" />)}
                         </div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                             <div key={i} className="space-y-3">
-                                <div className="aspect-video bg-slate-100 rounded-xl animate-pulse" />
+                                <div className="aspect-video bg-slate-200/60 rounded-2xl animate-pulse" />
                                 <div className="flex gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 shrink-0 animate-pulse" />
+                                    <div className="w-9 h-9 rounded-full bg-slate-200/60 shrink-0 animate-pulse" />
                                     <div className="flex-1 space-y-2">
-                                        <div className="h-4 bg-slate-100 rounded animate-pulse w-full" />
-                                        <div className="h-4 bg-slate-100 rounded animate-pulse w-2/3" />
+                                        <div className="h-4 bg-slate-200/60 rounded animate-pulse w-full" />
+                                        <div className="h-3 bg-slate-200/60 rounded animate-pulse w-2/3" />
                                     </div>
                                 </div>
                             </div>
@@ -221,24 +230,32 @@ export default function VideoLibrary() {
                     </div>
                 )
             ) : filtered.length === 0 ? (
-                <div className="py-32 text-center">
-                    <HiOutlineVideoCamera className="w-20 h-20 text-slate-200 mx-auto mb-6" />
-                    <h3 className="text-2xl font-black text-slate-900">No videos found</h3>
-                    <p className="text-slate-500 mt-2 font-medium">Try adjusting your filters or search terms.</p>
+                /* EMPTY STATE */
+                <div className="py-24 text-center bg-white border border-slate-200/80 rounded-3xl shadow-sm p-8 max-w-lg mx-auto my-12">
+                    <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mx-auto mb-4 text-rose-600">
+                        <HiOutlineFilm className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">No matching videos found</h3>
+                    <p className="text-slate-500 text-sm mt-1">Try clearing your filters or testing another search term.</p>
+                    <button
+                        onClick={() => { setSearch(''); setFilterSemester(null); setFilterSubject(null); }}
+                        className="mt-5 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-slate-800 transition-colors"
+                    >
+                        Reset All Filters
+                    </button>
                 </div>
             ) : (
-                /* ─── MAIN CONTENT ─── */
+                /* MAIN CONTENT */
                 <div className={`transition-opacity duration-300 ${videoTransition ? 'opacity-0' : 'opacity-100'}`}>
                     
                     {!activeVideo ? (
-                        /* ─── BROWSE MODE (GRID) ─── */
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8">
+                        /* BROWSE GRID */
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-8">
                             {filtered.map(video => {
                                 const thumbnail = getYouTubeThumbnail(video.url);
                                 const subjectText = video.subject || 'General';
-                                // Generate a deterministic color based on subject for the avatar
                                 const charCode = subjectText.charCodeAt(0) || 65;
-                                const avatarColor = `hsl(${charCode * 15 % 360}, 70%, 50%)`;
+                                const avatarColor = `hsl(${charCode * 15 % 360}, 65%, 48%)`;
 
                                 return (
                                     <div 
@@ -246,7 +263,8 @@ export default function VideoLibrary() {
                                         onClick={() => handleVideoSwitch(video)}
                                         className="group cursor-pointer flex flex-col gap-3"
                                     >
-                                        <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-100">
+                                        {/* Thumbnail Box */}
+                                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-sm group-hover:shadow-md transition-all">
                                             {thumbnail ? (
                                                 <img
                                                     src={thumbnail}
@@ -258,57 +276,57 @@ export default function VideoLibrary() {
                                                 <div 
                                                     className="w-full h-full flex items-center justify-center p-4 text-center group-hover:scale-105 transition-transform duration-500"
                                                     style={{ 
-                                                        background: `linear-gradient(135deg, hsl(${((video.title || 'V').charCodeAt(0) || 65) * 25 % 360}, 70%, 60%), hsl(${(((video.title || 'V').charCodeAt(0) || 65) * 25 + 40) % 360}, 80%, 40%))`
+                                                        background: `linear-gradient(135deg, hsl(${((video.title || 'V').charCodeAt(0) || 65) * 25 % 360}, 60%, 92%), hsl(${(((video.title || 'V').charCodeAt(0) || 65) * 25 + 40) % 360}, 70%, 82%))`
                                                     }}
                                                 >
-                                                    <span className="text-white font-black text-lg sm:text-xl drop-shadow-md line-clamp-3 leading-tight px-2">
+                                                    <span className="text-slate-800 font-extrabold text-sm sm:text-base line-clamp-3 leading-snug px-2">
                                                         {video.title || 'Untitled Video'}
                                                     </span>
                                                 </div>
                                             )}
-                                            {/* Duration overlay (placeholder) */}
-                                            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-semibold px-1.5 py-0.5 rounded">
-                                                Play
+
+                                            <div className="absolute bottom-2.5 right-2.5 bg-slate-900/85 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-wider uppercase">
+                                                Watch
                                             </div>
                                         </div>
                                         
+                                        {/* Card Info */}
                                         <div className="flex gap-3 px-1">
                                             <div 
-                                                className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-sm"
+                                                className="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center text-white font-extrabold text-xs shadow-sm"
                                                 style={{ backgroundColor: avatarColor }}
                                             >
                                                 {subjectText.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="flex flex-col min-w-0">
-                                                <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-red-600 transition-colors">
+                                                <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-rose-600 transition-colors">
                                                     {video.title || 'Untitled Video'}
                                                 </h3>
-                                                <p className="text-[13px] text-slate-500 mt-1 line-clamp-1 hover:text-slate-700">
-                                                    {subjectText}
-                                                </p>
-                                                <p className="text-[12px] text-slate-500">
-                                                    Semester {video.semester || '-'}
-                                                </p>
+                                                <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 font-medium">
+                                                    <span>{subjectText}</span>
+                                                    <span>•</span>
+                                                    <span className="text-slate-600 font-semibold">Sem {video.semester || '-'}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                )
+                                );
                             })}
                         </div>
                     ) : (
-                        /* ─── WATCH MODE (PLAYER) ─── */
-                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 items-start">
-                            {/* Left: Player & Info */}
-                            <div className="space-y-4">
+                        /* WATCH MODE */
+                        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+                            {/* Left: Player Section */}
+                            <div className="space-y-5">
                                 <button 
                                     onClick={handleCloseVideo}
-                                    className="flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-full w-max"
+                                    className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 bg-white border border-slate-200/80 hover:bg-slate-50 hover:border-slate-300 transition-all px-4 py-2.5 rounded-2xl shadow-sm"
                                 >
-                                    <HiOutlineArrowLeft className="w-4 h-4" />
-                                    Back to Home
+                                    <HiOutlineArrowLeft className="w-4 h-4 text-slate-500" />
+                                    Back to Catalog
                                 </button>
                                 
-                                <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-xl">
+                                <div className="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-slate-800">
                                     <iframe
                                         key={activeVideo.id}
                                         src={getEmbedUrl(activeVideo.url)}
@@ -319,100 +337,97 @@ export default function VideoLibrary() {
                                     />
                                 </div>
 
-                                <div className="p-2 space-y-4">
-                                    <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
+                                <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-4">
+                                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
                                         {activeVideo.title || 'Untitled Video'}
                                     </h2>
                                     
-                                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                                    <div className="flex items-center justify-between border-t border-b border-slate-100 py-3.5">
                                         <div className="flex items-center gap-3">
                                             <div 
-                                                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                                                style={{ backgroundColor: `hsl(${((activeVideo.subject || 'G').charCodeAt(0) || 65) * 15 % 360}, 70%, 50%)` }}
+                                                className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-extrabold text-sm shadow-sm"
+                                                style={{ backgroundColor: `hsl(${((activeVideo.subject || 'G').charCodeAt(0) || 65) * 15 % 360}, 65%, 48%)` }}
                                             >
                                                 {(activeVideo.subject || 'G').charAt(0).toUpperCase()}
                                             </div>
                                             <div>
-                                                <h3 className="text-base font-bold text-slate-900 leading-none">
+                                                <h3 className="text-sm font-bold text-slate-900">
                                                     {activeVideo.subject || 'General'}
                                                 </h3>
-                                                <p className="text-xs text-slate-500 mt-1">Course Module</p>
+                                                <p className="text-xs font-semibold text-slate-400">Curriculum Video</p>
                                             </div>
                                         </div>
+
+                                        <span className="px-3 py-1 bg-slate-100 border border-slate-200/60 rounded-xl text-xs font-bold text-slate-700">
+                                            Semester {activeVideo.semester || '-'}
+                                        </span>
                                     </div>
                                     
-                                    <div className="bg-slate-100 rounded-xl p-4 hover:bg-slate-200 transition-colors cursor-pointer">
-                                        <p className="font-bold text-sm text-slate-900 mb-1">
-                                            Semester {activeVideo.semester || '-'}
+                                    <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-4 text-xs text-slate-600 leading-relaxed">
+                                        <p className="font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                                            <HiOutlineAcademicCap className="w-4 h-4 text-rose-600" />
+                                            Overview
                                         </p>
-                                        <p className="text-sm text-slate-700">
-                                            Video lecture for {activeVideo.subject || 'this module'}. Dive deep into the core concepts covered in this module.
-                                        </p>
+                                        In-depth video lecture covering core topics for {activeVideo.subject || 'this module'}. Use this resource alongside official course notes.
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right: Up Next Queue */}
-                            <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x mb-2">
-                                     <button className="snap-start whitespace-nowrap px-3 py-1 rounded-lg text-sm font-semibold bg-slate-900 text-white">
-                                         All
-                                     </button>
-                                     <button className="snap-start whitespace-nowrap px-3 py-1 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
-                                         Related
-                                     </button>
-                                     <button className="snap-start whitespace-nowrap px-3 py-1 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
-                                         From {activeVideo.subject || 'General'}
-                                     </button>
+                            {/* Right: Up Next Sidebar */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between px-1">
+                                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Up Next</h3>
+                                    <span className="text-xs font-bold text-slate-400">{queueVideos.length} Videos</span>
                                 </div>
                                 
-                                {queueVideos.map(video => {
-                                    const thumbnail = getYouTubeThumbnail(video.url);
-                                    const subjectText = video.subject || 'General';
-                                    return (
-                                        <div 
-                                            key={video.id}
-                                            onClick={() => handleVideoSwitch(video)}
-                                            className="flex gap-2 group cursor-pointer"
-                                        >
-                                            <div className="relative w-40 min-w-[160px] aspect-video rounded-xl overflow-hidden bg-slate-100">
-                                                {thumbnail ? (
-                                                    <img
-                                                        src={thumbnail}
-                                                        alt={video.title || 'Video'}
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                        loading="lazy"
-                                                    />
-                                                ) : (
-                                                    <div 
-                                                        className="w-full h-full flex items-center justify-center p-2 text-center group-hover:scale-105 transition-transform duration-300"
-                                                        style={{ 
-                                                            background: `linear-gradient(135deg, hsl(${((video.title || 'V').charCodeAt(0) || 65) * 25 % 360}, 70%, 60%), hsl(${(((video.title || 'V').charCodeAt(0) || 65) * 25 + 40) % 360}, 80%, 40%))`
-                                                        }}
-                                                    >
-                                                        <span className="text-white font-bold text-xs drop-shadow-md line-clamp-2 leading-tight">
-                                                            {video.title || 'Untitled Video'}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                                <div className="absolute bottom-1 right-1 bg-black/80 text-white text-[10px] font-semibold px-1 rounded">
-                                                    10:00
+                                <div className="space-y-3">
+                                    {queueVideos.map(video => {
+                                        const thumbnail = getYouTubeThumbnail(video.url);
+                                        const subjectText = video.subject || 'General';
+                                        
+                                        return (
+                                            <div 
+                                                key={video.id}
+                                                onClick={() => handleVideoSwitch(video)}
+                                                className="flex gap-3 p-2 bg-white border border-slate-200/80 hover:border-rose-300 rounded-2xl cursor-pointer group hover:shadow-md transition-all"
+                                            >
+                                                <div className="relative w-36 min-w-[140px] aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-100">
+                                                    {thumbnail ? (
+                                                        <img
+                                                            src={thumbnail}
+                                                            alt={video.title || 'Video'}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            loading="lazy"
+                                                        />
+                                                    ) : (
+                                                        <div 
+                                                            className="w-full h-full flex items-center justify-center p-2 text-center"
+                                                            style={{ 
+                                                                background: `linear-gradient(135deg, hsl(${((video.title || 'V').charCodeAt(0) || 65) * 25 % 360}, 60%, 92%), hsl(${(((video.title || 'V').charCodeAt(0) || 65) * 25 + 40) % 360}, 70%, 82%))`
+                                                            }}
+                                                        >
+                                                            <span className="text-slate-800 font-extrabold text-[10px] line-clamp-2">
+                                                                {video.title || 'Untitled'}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="flex flex-col justify-center min-w-0 pr-1">
+                                                    <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-rose-600 transition-colors">
+                                                        {video.title || 'Untitled Video'}
+                                                    </h4>
+                                                    <p className="text-[11px] font-medium text-slate-500 mt-1 line-clamp-1">
+                                                        {subjectText}
+                                                    </p>
+                                                    <p className="text-[10px] font-bold text-slate-400 mt-0.5">
+                                                        Sem {video.semester || '-'}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col py-0.5 min-w-0 pr-2">
-                                                <h4 className="text-sm font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-red-600 transition-colors">
-                                                    {video.title || 'Untitled Video'}
-                                                </h4>
-                                                <p className="text-xs text-slate-500 mt-1 line-clamp-1 hover:text-slate-700">
-                                                    {subjectText}
-                                                </p>
-                                                <p className="text-[11px] text-slate-500 mt-0.5">
-                                                    Sem {video.semester || '-'}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     )}
