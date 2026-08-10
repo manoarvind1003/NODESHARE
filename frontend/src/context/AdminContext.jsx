@@ -8,7 +8,11 @@ export function AdminProvider({ children }) {
     });
 
     const login = (username, password) => {
-        if (username === 'Admin' && password === 'MANO@9008') {
+        if (username === 'Admin' && password === 'MANO@9008'){
+            setIsAdmin(true);
+            localStorage.setItem('admin_session', 'active');
+            return true;
+        }else if(username === 'Smiti' && password === 'Smiti@123'){
             setIsAdmin(true);
             localStorage.setItem('admin_session', 'active');
             return true;

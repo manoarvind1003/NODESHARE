@@ -11,7 +11,19 @@ import {
     HiOutlineCube
 } from 'react-icons/hi';
 
-const modules = [1, 2, 3, 4, 5, 6];
+const sidebarSections = [
+    { title: "BSc Semesters", items: [1, 2, 3, 4, 5, 6].map(id => ({ id, name: `Semester ${id}` })) },
+    { title: "Honors", items: [
+        { id: 7, name: "Semester 7" },
+        { id: 8, name: "Semester 8" }
+    ]},
+    { title: "M.Sc.", items: [
+        { id: 10, name: "Semester 1" },
+        { id: 11, name: "Semester 2" },
+        { id: 12, name: "Semester 3" },
+        { id: 13, name: "Semester 4" }
+    ]}
+];
 
 // These will be applied to the icons for a vibrant, varied look
 const moduleColors = [
@@ -108,35 +120,39 @@ export default function Sidebar({ isOpen, onClose }) {
                             )}
                         </NavLink>
 
-                        {/* Semesters Section Header */}
-                        <div className="pt-6 pb-2 flex items-center gap-3">
-                            <p className="px-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                Semesters
-                            </p>
-                            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
-                        </div>
+                        {sidebarSections.map((section, secIdx) => (
+                            <div key={section.title}>
+                                {/* Section Header */}
+                                <div className={`pb-2 flex items-center gap-3 ${secIdx === 0 ? 'pt-6' : 'pt-4'}`}>
+                                    <p className="px-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        {section.title}
+                                    </p>
+                                    <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
+                                </div>
 
-                        {/* Semester Links with Dynamic Icons */}
-                        {modules.map((id, i) => {
-                            const iconStyle = moduleColors[i % moduleColors.length];
-                            return (
-                                <NavLink
-                                    key={id}
-                                    to={`/semester/${id}`}
-                                    className={linkClass}
-                                    onClick={onClose}
-                                >
-                                    {({ isActive }) => (
-                                        <>
-                                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center border transition-colors ${isActive ? 'bg-white/20 border-white/20 text-white' : iconStyle}`}>
-                                                <HiOutlineBookOpen className="w-4 h-4" />
-                                            </div>
-                                            Semester {id}
-                                        </>
-                                    )}
-                                </NavLink>
-                            );
-                        })}
+                                {/* Section Links */}
+                                {section.items.map((item, i) => {
+                                    const iconStyle = moduleColors[i % moduleColors.length];
+                                    return (
+                                        <NavLink
+                                            key={item.id}
+                                            to={`/semester/${item.id}`}
+                                            className={linkClass}
+                                            onClick={onClose}
+                                        >
+                                            {({ isActive }) => (
+                                                <>
+                                                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center border transition-colors ${isActive ? 'bg-white/20 border-white/20 text-white' : iconStyle}`}>
+                                                        <HiOutlineBookOpen className="w-4 h-4" />
+                                                    </div>
+                                                    {item.name}
+                                                </>
+                                            )}
+                                        </NavLink>
+                                    );
+                                })}
+                            </div>
+                        ))}
 
                         {/* Management Section Header */}
                         <div className="pt-8 pb-2 flex items-center gap-3">

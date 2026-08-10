@@ -13,61 +13,148 @@ import {
     HiOutlineChartBar
 } from 'react-icons/hi';
 
-const moduleCards = [
-    { 
-        id: 1, 
-        label: 'Core Foundations', 
-        tagline: 'Algorithms, Data Structures & Logic',
-        gradient: 'from-blue-600 to-cyan-500', 
-        glow: 'group-hover:shadow-blue-500/25',
-        badgeColor: 'text-blue-700 bg-blue-50 border-blue-200/60',
-        icon: HiOutlineBookOpen 
+const moduleSections = [
+    {
+        title: "BSc Curriculum",
+        subtitle: "Core undergraduate semesters",
+        countText: "6 Semesters",
+        cards: [
+            { 
+                id: 1, 
+                title: 'Semester 1',
+                label: 'Data Science Foundations', 
+                tagline: 'Data Science, Statistics, Python & Data Tools',
+                gradient: 'from-blue-600 to-cyan-500', 
+                glow: 'group-hover:shadow-blue-500/25',
+                badgeColor: 'text-blue-700 bg-blue-50 border-blue-200/60',
+                icon: HiOutlineBookOpen 
+            },
+            { 
+                id: 2, 
+                title: 'Semester 2',
+                label: 'Programming & Data Structures', 
+                tagline: 'Algorithms, Python, Time Series & Databases',
+                gradient: 'from-violet-600 to-purple-500', 
+                glow: 'group-hover:shadow-violet-500/25',
+                badgeColor: 'text-violet-700 bg-violet-50 border-violet-200/60',
+                icon: HiOutlineFolderOpen 
+            },
+            { 
+                id: 3, 
+                title: 'Semester 3',
+                label: 'Statistical Data Science', 
+                tagline: 'R, Probability, Databases & Streaming Data',
+                gradient: 'from-emerald-600 to-teal-500', 
+                glow: 'group-hover:shadow-emerald-500/25',
+                badgeColor: 'text-emerald-700 bg-emerald-50 border-emerald-200/60',
+                icon: HiOutlineChip 
+            },
+            { 
+                id: 4, 
+                title: 'Semester 4',
+                label: 'Big Data & Computational Mathematics', 
+                tagline: 'Spark, Linear Algebra, Databases & Web Technology',
+                gradient: 'from-amber-500 to-orange-500', 
+                glow: 'group-hover:shadow-amber-500/25',
+                badgeColor: 'text-amber-700 bg-amber-50 border-amber-200/60',
+                icon: HiOutlineServer 
+            },
+            { 
+                id: 5, 
+                title: 'Semester 5',
+                label: 'AI, Data Security & Research', 
+                tagline: 'Artificial Intelligence, ML, NoSQL, Security & Research',
+                gradient: 'from-rose-600 to-pink-500', 
+                glow: 'group-hover:shadow-rose-500/25',
+                badgeColor: 'text-rose-700 bg-rose-50 border-rose-200/60',
+                icon: HiOutlineChartBar 
+            },
+            { 
+                id: 6, 
+                title: 'Semester 6',
+                label: 'Cloud, NLP & Data Mining', 
+                tagline: 'Cloud Computing, Natural Language Processing & Data Warehousing',
+                gradient: 'from-indigo-600 to-blue-600', 
+                glow: 'group-hover:shadow-indigo-500/25',
+                badgeColor: 'text-indigo-700 bg-indigo-50 border-indigo-200/60',
+                icon: HiOutlineGlobe 
+            }
+        ]
     },
-    { 
-        id: 2, 
-        label: 'Data Systems', 
-        tagline: 'Databases, SQL & Storage Engines',
-        gradient: 'from-violet-600 to-purple-500', 
-        glow: 'group-hover:shadow-violet-500/25',
-        badgeColor: 'text-violet-700 bg-violet-50 border-violet-200/60',
-        icon: HiOutlineFolderOpen 
+    {
+        title: "Honors",
+        subtitle: "Advanced electives, capstone & research curriculum",
+        countText: "2 Semesters",
+        cards: [
+            { 
+                id: 7, 
+                title: 'Semester 7',
+                label: 'Advanced Data Engineering', 
+                tagline: 'Big Data, Visualization, Storage & Research',
+                gradient: 'from-pink-600 to-rose-500', 
+                glow: 'group-hover:shadow-pink-500/25',
+                badgeColor: 'text-pink-700 bg-pink-50 border-pink-200/60',
+                icon: HiOutlineDocumentText 
+            },
+            { 
+                id: 8, 
+                title: 'Semester 8',
+                label: 'Deep Learning & Industry', 
+                tagline: 'Deep Learning, Network Analytics, Internship & Research',
+                gradient: 'from-cyan-600 to-teal-500', 
+                glow: 'group-hover:shadow-cyan-500/25',
+                badgeColor: 'text-cyan-700 bg-cyan-50 border-cyan-200/60',
+                icon: HiOutlineSparkles 
+            }
+        ]
     },
-    { 
-        id: 3, 
-        label: 'Advanced Logic', 
-        tagline: 'Distributed Systems & Computation',
-        gradient: 'from-emerald-600 to-teal-500', 
-        glow: 'group-hover:shadow-emerald-500/25',
-        badgeColor: 'text-emerald-700 bg-emerald-50 border-emerald-200/60',
-        icon: HiOutlineChip 
-    },
-    { 
-        id: 4, 
-        label: 'System Architecture', 
-        tagline: 'Microservices, APIs & Patterns',
-        gradient: 'from-amber-500 to-orange-500', 
-        glow: 'group-hover:shadow-amber-500/25',
-        badgeColor: 'text-amber-700 bg-amber-50 border-amber-200/60',
-        icon: HiOutlineServer 
-    },
-    { 
-        id: 5, 
-        label: 'Performance Optima', 
-        tagline: 'Profiling, Caching & Scalability',
-        gradient: 'from-rose-600 to-pink-500', 
-        glow: 'group-hover:shadow-rose-500/25',
-        badgeColor: 'text-rose-700 bg-rose-50 border-rose-200/60',
-        icon: HiOutlineChartBar 
-    },
-    { 
-        id: 6, 
-        label: 'Global Infrastructure', 
-        tagline: 'Cloud Native, Edge & DevOps',
-        gradient: 'from-indigo-600 to-blue-600', 
-        glow: 'group-hover:shadow-indigo-500/25',
-        badgeColor: 'text-indigo-700 bg-indigo-50 border-indigo-200/60',
-        icon: HiOutlineGlobe 
-    },
+    {
+        title: "M.Sc. Curriculum",
+        subtitle: "Master of Science modules",
+        countText: "4 Semesters",
+        cards: [
+            { 
+                id: 10, 
+                title: 'Semester 1',
+                label: 'Advanced Data Science', 
+                tagline: 'Statistical Methods, Databases & Visualization',
+                gradient: 'from-indigo-600 to-blue-500', 
+                glow: 'group-hover:shadow-indigo-500/25',
+                badgeColor: 'text-indigo-700 bg-indigo-50 border-indigo-200/60',
+                icon: HiOutlineBookOpen 
+            },
+            { 
+                id: 11, 
+                title: 'Semester 2',
+                label: 'Applied Data Analytics', 
+                tagline: 'Advanced Analytics, Business Intelligence & Visualization',
+                gradient: 'from-teal-600 to-emerald-500', 
+                glow: 'group-hover:shadow-teal-500/25',
+                badgeColor: 'text-teal-700 bg-teal-50 border-teal-200/60',
+                icon: HiOutlineChip 
+            },
+            { 
+                id: 12, 
+                title: 'Semester 3',
+                label: 'Big Data & Data Engineering', 
+                tagline: 'Big Data Analytics, Linear Algebra, Visualization & Storage',
+                gradient: 'from-amber-600 to-orange-500', 
+                glow: 'group-hover:shadow-amber-500/25',
+                badgeColor: 'text-amber-700 bg-amber-50 border-amber-200/60',
+                icon: HiOutlineDocumentText 
+            },
+            { 
+                id: 13, 
+                title: 'Semester 4',
+                label: 'Deep Learning & Research', 
+                tagline: 'Deep Learning, Network Analytics, Internship & Research',
+                gradient: 'from-rose-600 to-red-500', 
+                glow: 'group-hover:shadow-rose-500/25',
+                badgeColor: 'text-rose-700 bg-rose-50 border-rose-200/60',
+                icon: HiOutlineSparkles 
+            }
+        ]
+    }
 ];
 
 export default function Home() {
@@ -173,58 +260,62 @@ export default function Home() {
             </div>
 
             {/* Semester Selection Grid */}
-            <div className="space-y-6">
-                <div className="flex items-center justify-between px-1">
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Curriculum Modules</h2>
-                        <p className="text-slate-500 text-sm mt-0.5">Select a semester to explore resources</p>
-                    </div>
-                    <span className="px-3 py-1 bg-white border border-slate-200/80 rounded-full text-xs font-bold text-slate-600 shadow-sm">
-                        6 Semesters
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {moduleCards.map(({ id, label, tagline, gradient, glow, badgeColor, icon: Icon }) => (
-                        <Link
-                            key={id}
-                            to={`/semester/${id}`}
-                            className="group relative rounded-3xl bg-white border border-slate-200/80 p-7 flex flex-col justify-between hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5"
-                        >
+            <div className="space-y-12">
+                {moduleSections.map((section, idx) => (
+                    <div key={idx} className="space-y-6">
+                        <div className="flex items-center justify-between px-1">
                             <div>
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-md transition-shadow duration-300 ${glow}`}>
-                                        <Icon className="w-6 h-6 text-white" />
+                                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{section.title}</h2>
+                                <p className="text-slate-500 text-sm mt-0.5">{section.subtitle}</p>
+                            </div>
+                            <span className="px-3 py-1 bg-white border border-slate-200/80 rounded-full text-xs font-bold text-slate-600 shadow-sm">
+                                {section.countText}
+                            </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {section.cards.map(({ id, title, label, tagline, gradient, glow, badgeColor, icon: Icon }) => (
+                                <Link
+                                    key={id}
+                                    to={`/semester/${id}`}
+                                    className="group relative rounded-3xl bg-white border border-slate-200/80 p-7 flex flex-col justify-between hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5"
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-md transition-shadow duration-300 ${glow}`}>
+                                                <Icon className="w-6 h-6 text-white" />
+                                            </div>
+                                            <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">
+                                                {id < 10 ? `0${id}` : id}
+                                            </span>
+                                        </div>
+
+                                        <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                                            {title}
+                                        </h3>
+                                        
+                                        <span className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold border mt-2 ${badgeColor}`}>
+                                            {label}
+                                        </span>
+
+                                        <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                                            {tagline}
+                                        </p>
                                     </div>
-                                    <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">
-                                        0{id}
-                                    </span>
-                                </div>
 
-                                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                                    Semester {id}
-                                </h3>
-                                
-                                <span className={`inline-block px-2.5 py-0.5 rounded-md text-[11px] font-bold border mt-2 ${badgeColor}`}>
-                                    {label}
-                                </span>
-
-                                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                                    {tagline}
-                                </p>
-                            </div>
-
-                            <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">
-                                    View Repository
-                                </span>
-                                <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center group-hover:bg-indigo-600 group-hover:border-indigo-600 text-slate-600 group-hover:text-white transition-all duration-300">
-                                    <HiOutlineArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                                    <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">
+                                            View Repository
+                                        </span>
+                                        <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-200/60 flex items-center justify-center group-hover:bg-indigo-600 group-hover:border-indigo-600 text-slate-600 group-hover:text-white transition-all duration-300">
+                                            <HiOutlineArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -85,8 +85,8 @@ router.post('/upload', (req, res, next) => {
         }
 
         const semesterNum = parseInt(semester);
-        if (isNaN(semesterNum) || semesterNum < 1 || semesterNum > 8) {
-            return res.status(400).json({ error: 'Semester must be between 1 and 8' });
+        if (isNaN(semesterNum) || semesterNum < 1 || semesterNum > 13) {
+            return res.status(400).json({ error: 'Semester must be between 1 and 13' });
         }
 
         // Generate a unique file path in storage

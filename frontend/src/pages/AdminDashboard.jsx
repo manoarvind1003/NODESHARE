@@ -24,7 +24,13 @@ import toast from 'react-hot-toast';
 const API_URL = '';
 
 const categories = ['General', 'Notes', 'Practical', 'Assignment', 'Case Studies', 'Question Papers', 'Reference Material', 'Datasets'];
-const modules = [1, 2, 3, 4, 5, 6];
+const modules = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const moduleNames = {
+  1: 'Semester 1', 2: 'Semester 2', 3: 'Semester 3', 4: 'Semester 4',
+  5: 'Semester 5', 6: 'Semester 6', 7: 'Semester 7', 8: 'Semester 8',
+  9: 'Honors', 10: 'MSc P1 - Sem 1', 11: 'MSc P1 - Sem 2',
+  12: 'MSc P2 - Sem 3', 13: 'MSc P2 - Sem 4'
+};
 
 function formatFileSize(bytes) {
     if (!bytes) return '—';
@@ -442,7 +448,7 @@ export default function AdminDashboard() {
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">Semester</label>
                                 <select value={moduleId} onChange={e => setModuleId(e.target.value)}
                                     className="w-full bg-slate-50/80 border border-slate-200 text-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500">
-                                    {modules.map(s => <option key={s} value={s}>Semester {s}</option>)}
+                                    {modules.map(s => <option key={s} value={s}>{moduleNames[s]}</option>)}
                                 </select>
                             </div>
                             <div>
@@ -493,7 +499,7 @@ export default function AdminDashboard() {
                         <select value={resourceSemFilter} onChange={e => setResourceSemFilter(e.target.value)}
                             className="bg-white border border-slate-200 text-slate-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-all">
                             <option value="">All Sems</option>
-                            {modules.map(s => <option key={s} value={String(s)}>Sem {s}</option>)}
+                            {modules.map(s => <option key={s} value={String(s)}>{moduleNames[s]}</option>)}
                         </select>
                         <select value={resourceCatFilter} onChange={e => setResourceCatFilter(e.target.value)}
                             className="bg-white border border-slate-200 text-slate-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-all">
@@ -602,7 +608,7 @@ export default function AdminDashboard() {
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">Semester</label>
                                 <select value={videoModule} onChange={e => setVideoModule(e.target.value)}
                                     className="w-full bg-slate-50/80 border border-slate-200 text-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500 transition-all">
-                                    {modules.map(s => <option key={s} value={s}>Semester {s}</option>)}
+                                    {modules.map(s => <option key={s} value={s}>{moduleNames[s]}</option>)}
                                 </select>
                             </div>
                         </div>
@@ -737,7 +743,7 @@ export default function AdminDashboard() {
                                     <select value={editingResource.semester} 
                                         onChange={e => setEditingResource({ ...editingResource, semester: e.target.value })}
                                         className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-500">
-                                        {modules.map(s => <option key={s} value={s}>Semester {s}</option>)}
+                                        {modules.map(s => <option key={s} value={s}>{moduleNames[s]}</option>)}
                                     </select>
                                 </div>
                                 <div>
@@ -799,7 +805,7 @@ export default function AdminDashboard() {
                                     <select value={editingVideo.semester} 
                                         onChange={e => setEditingVideo({ ...editingVideo, semester: e.target.value })}
                                         className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500">
-                                        {modules.map(s => <option key={s} value={s}>Semester {s}</option>)}
+                                        {modules.map(s => <option key={s} value={s}>{moduleNames[s]}</option>)}
                                     </select>
                                 </div>
                             </div>

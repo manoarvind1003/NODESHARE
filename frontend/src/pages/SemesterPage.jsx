@@ -18,8 +18,19 @@ import toast from 'react-hot-toast';
 const API_URL = '';
 
 const semesterNames = {
-  1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth',
-  5: 'Fifth', 6: 'Sixth'
+  1: { prefix: 'First', suffix: 'Semester' },
+  2: { prefix: 'Second', suffix: 'Semester' },
+  3: { prefix: 'Third', suffix: 'Semester' },
+  4: { prefix: 'Fourth', suffix: 'Semester' },
+  5: { prefix: 'Fifth', suffix: 'Semester' },
+  6: { prefix: 'Sixth', suffix: 'Semester' },
+  7: { prefix: 'Seventh', suffix: 'Semester' },
+  8: { prefix: 'Eighth', suffix: 'Semester' },
+  9: { prefix: 'Honors', suffix: 'Program' },
+  10: { prefix: 'MSc Part 1', suffix: 'Sem 1' },
+  11: { prefix: 'MSc Part 1', suffix: 'Sem 2' },
+  12: { prefix: 'MSc Part 2', suffix: 'Sem 3' },
+  13: { prefix: 'MSc Part 2', suffix: 'Sem 4' },
 };
 
 const categories = [
@@ -186,9 +197,9 @@ export default function SemesterPage() {
             </div>
             
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-              {semesterNames[semesterId] || `Semester ${semesterId}`}{' '}
+              {semesterNames[semesterId]?.prefix || `Semester ${semesterId}`}{' '}
               <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Semester
+                {semesterNames[semesterId]?.suffix || ''}
               </span>
             </h1>
             

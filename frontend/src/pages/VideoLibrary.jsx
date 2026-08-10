@@ -139,7 +139,7 @@ export default function VideoLibrary() {
                             <span className="bg-gradient-to-tr from-rose-600 to-red-500 text-white p-2.5 rounded-2xl shadow-md shadow-rose-500/20">
                                 <HiOutlineVideoCamera className="w-6 h-6" />
                             </span>
-                            NodeTube
+                            LectureLens
                         </h1>
                     </div>
 
