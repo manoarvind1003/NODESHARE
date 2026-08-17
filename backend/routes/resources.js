@@ -3,6 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const router = express.Router();
 const supabase = require('../lib/supabase');
+const requireAuth = require('../middleware/auth');
+const requireRole = require('../middleware/requireRole');
 
 // Multer config — store files in memory for streaming to Supabase
 const upload = multer({
@@ -55,8 +57,8 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST /api/resources/upload — file upload (now public)
-router.post('/upload', (req, res, next) => {
+// POST /api/resources/upload — file upload (protected for admins)
+router.post('/upload', requireAuth, requireRole(['admin', 'super_admin']), (req, res, next) => {
     console.log('--- UPLOAD REQUEST INITIATED ---');
     console.log('Headers:', JSON.stringify(req.headers, null, 2));
 
@@ -126,7 +128,7 @@ router.post('/upload', (req, res, next) => {
                 file_size: req.file.size,
                 semester: semesterNum,
                 category: category || 'General',
-                uploaded_by: null // No user context
+                uploaded_by: req.user.id
             })
             .select()
             .single();
@@ -187,8 +189,51 @@ router.get('/download/:id', async (req, res) => {
     }
 });
 
-// DELETE /api/resources/:id — file delete (now public)
-router.delete('/:id', async (req, res) => {
+// PUT /api/resources/:id — update resource metadata (title, semester, category)
+router.put('/:id', requireAuth, requireRole(['admin', 'super_admin']), async (req, res) => {
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable' });
+    try {
+        const { id } = req.params;
+        const { title, semester, category } = req.body;
+
+        if (!title && !semester && !category) {
+            return res.status(400).json({ error: 'At least one field is required to update' });
+        }
+
+        const updates = {};
+        if (title) updates.title = title.trim();
+        if (semester) {
+            const sem = parseInt(semester);
+            if (isNaN(sem) || sem < 1 || sem > 13) {
+                return res.status(400).json({ error: 'Semester must be between 1 and 13' });
+            }
+            updates.semester = sem;
+        }
+        if (category) updates.category = category;
+
+        const { data, error } = await supabase
+            .from('resources')
+            .update(updates)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                return res.status(404).json({ error: 'Resource not found' });
+            }
+            throw error;
+        }
+
+        res.json(data);
+    } catch (err) {
+        console.error('Update resource error:', err);
+        res.status(500).json({ error: 'Failed to update resource', details: err.message });
+    }
+});
+
+// DELETE /api/resources/:id — file delete (protected for admins)
+router.delete('/:id', requireAuth, requireRole(['admin', 'super_admin']), async (req, res) => {
     if (!supabase) return res.status(503).json({ error: 'Database service unavailable' });
     try {
         const { id } = req.params;
@@ -231,7 +276,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // POST /api/resources/bulk-delete
-router.post('/bulk-delete', async (req, res) => {
+router.post('/bulk-delete', requireAuth, requireRole(['admin', 'super_admin']), async (req, res) => {
     if (!supabase) return res.status(503).json({ error: 'Database service unavailable' });
     try {
         const { ids } = req.body;

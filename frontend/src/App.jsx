@@ -5,8 +5,15 @@ import Home from './pages/Home';
 import SemesterPage from './pages/SemesterPage';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
+import SignupPage from './pages/SignupPage';
+import ForgotPassword from './pages/ForgotPassword';
+import UpdatePassword from './pages/UpdatePassword';
+import PendingApproval from './pages/PendingApproval';
+import AccountRejected from './pages/AccountRejected';
+import AccountSuspended from './pages/AccountSuspended';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import { AdminProvider } from './context/AdminContext';
+import { AuthProvider } from './context/AuthContext';
 import VideoLibrary from './pages/VideoLibrary';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 
@@ -37,13 +44,27 @@ function AppLayout() {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/login" element={<AdminLogin />} />
+                            <Route path="/signup" element={<SignupPage />} />
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/update-password" element={<UpdatePassword />} />
+                            <Route path="/pending-approval" element={<PendingApproval />} />
+                            <Route path="/account-rejected" element={<AccountRejected />} />
+                            <Route path="/account-suspended" element={<AccountSuspended />} />
                             <Route path="/videos" element={<VideoLibrary />} />
                             <Route path="/semester/:semesterId" element={<SemesterPage />} />
                             <Route
                                 path="/admin"
                                 element={
-                                    <ProtectedRoute>
+                                    <ProtectedRoute allowedRoles={['admin', 'super_admin']} allowedStatuses={['active']}>
                                         <AdminDashboard />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/super-admin"
+                                element={
+                                    <ProtectedRoute allowedRoles={['super_admin']} allowedStatuses={['active']}>
+                                        <SuperAdminDashboard />
                                     </ProtectedRoute>
                                 }
                             />
@@ -57,10 +78,10 @@ function AppLayout() {
 
 export default function App() {
     return (
-        <AdminProvider>
+        <AuthProvider>
             <Routes>
                 <Route path="/*" element={<AppLayout />} />
             </Routes>
-        </AdminProvider>
+        </AuthProvider>
     );
 }

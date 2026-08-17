@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { useDropzone } from 'react-dropzone';
 import {
     HiOutlineCloudUpload,
@@ -24,12 +25,12 @@ import toast from 'react-hot-toast';
 const API_URL = '';
 
 const categories = ['General', 'Notes', 'Practical', 'Assignment', 'Case Studies', 'Question Papers', 'Reference Material', 'Datasets'];
-const modules = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const modules = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const moduleNames = {
   1: 'Semester 1', 2: 'Semester 2', 3: 'Semester 3', 4: 'Semester 4',
-  5: 'Semester 5', 6: 'Semester 6', 7: 'Semester 7', 8: 'Semester 8',
-  9: 'Honors', 10: 'MSc P1 - Sem 1', 11: 'MSc P1 - Sem 2',
-  12: 'MSc P2 - Sem 3', 13: 'MSc P2 - Sem 4'
+  5: 'Semester 5', 6: 'Semester 6', 7: 'Semester 7 (Hons)', 8: 'Semester 8 (Hons)',
+  9: 'MSc P1 - Sem 1', 10: 'MSc P1 - Sem 2',
+  11: 'MSc P2 - Sem 3', 12: 'MSc P2 - Sem 4'
 };
 
 function formatFileSize(bytes) {
@@ -107,6 +108,7 @@ function SectionHeader({ title, count, countColor = 'indigo' }) {
 // ─── Main Component ───────────────────────────────────────────────
 
 export default function AdminDashboard() {
+    const { session } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
     const [resources, setResources] = useState([]);
     const [videos, setVideos] = useState([]);
@@ -193,7 +195,11 @@ export default function AdminDashboard() {
                 fd.append('title', file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '));
                 fd.append('semester', moduleId);
                 fd.append('category', category);
-                const res = await fetch(`${API_URL}/api/resources/upload`, { method: 'POST', body: fd });
+                const res = await fetch(`${API_URL}/api/resources/upload`, { 
+                    method: 'POST', 
+                    headers: { 'Authorization': `Bearer ${session?.access_token}` },
+                    body: fd 
+                });
                 if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.details || d.error || 'Failed'); }
                 setUploadProgress(p => ({ ...p, [fileId]: 'done' })); ok++;
             } catch (err) {
@@ -208,11 +214,17 @@ export default function AdminDashboard() {
 
     const handleBulkDelete = async () => {
         if (!selectedResourceIds.length) return;
+        if (!window.confirm(`Are you sure you want to permanently delete ${selectedResourceIds.length} file${selectedResourceIds.length > 1 ? 's' : ''}? This cannot be undone.`)) {
+            return;
+        }
         setDeleteConfirm(null);
         toast.promise(
             (async () => {
                 const res = await fetch(`${API_URL}/api/resources/bulk-delete`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session?.access_token}`
+                    },
                     body: JSON.stringify({ ids: selectedResourceIds })
                 });
                 if (!res.ok) throw new Error('Bulk delete failed');
@@ -228,7 +240,10 @@ export default function AdminDashboard() {
         e.preventDefault(); setRegistering(true);
         try {
             const res = await fetch(`${API_URL}/api/videos`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token}`
+                },
                 body: JSON.stringify({ title: videoTitle, url: videoUrl, subject: videoSubject, semester: videoModule })
             });
             if (!res.ok) throw new Error('Registration failed');
@@ -245,7 +260,10 @@ export default function AdminDashboard() {
         try {
             const res = await fetch(`${API_URL}/api/resources/${editingResource.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token}`
+                },
                 body: JSON.stringify({
                     title: editingResource.title,
                     semester: editingResource.semester,
@@ -265,7 +283,10 @@ export default function AdminDashboard() {
         try {
             const res = await fetch(`${API_URL}/api/videos/${editingVideo.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token}`
+                },
                 body: JSON.stringify({
                     title: editingVideo.title,
                     url: editingVideo.url,
@@ -284,7 +305,10 @@ export default function AdminDashboard() {
         if (deleteConfirm !== id) { setDeleteConfirm(id); return; }
         setDeleteConfirm(null);
         try {
-            const res = await fetch(`${API_URL}/api/resources/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/api/resources/${id}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${session?.access_token}` }
+            });
             if (!res.ok) throw new Error();
             toast.success('Resource deleted'); fetchData();
         } catch { toast.error('Delete failed'); }
@@ -294,7 +318,10 @@ export default function AdminDashboard() {
         if (videoDeleteConfirm !== id) { setVideoDeleteConfirm(id); return; }
         setVideoDeleteConfirm(null);
         try {
-            const res = await fetch(`${API_URL}/api/videos/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/api/videos/${id}`, { 
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${session?.access_token}` }
+            });
             if (!res.ok) throw new Error();
             toast.success('Video removed'); fetchData();
         } catch { toast.error('Delete failed'); }

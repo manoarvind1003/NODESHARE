@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAdmin } from '../context/AdminContext';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { 
   HiOutlineLockClosed, 
   HiOutlineUser, 
@@ -12,31 +12,47 @@ import {
 import toast from 'react-hot-toast';
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login } = useAdmin();
+  const { signIn, user, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
+  // If already logged in, redirect to appropriate dashboard
+  useEffect(() => {
+    if (user && profile) {
+      if (profile.status === 'pending') return navigate('/pending-approval', { replace: true });
+      if (profile.status === 'rejected') return navigate('/account-rejected', { replace: true });
+      if (profile.status === 'suspended') return navigate('/account-suspended', { replace: true });
+      if (profile.role === 'super_admin') return navigate('/super-admin', { replace: true });
+      if (profile.status === 'active') return navigate('/admin', { replace: true });
+    }
+  }, [user, profile, navigate]);
+
   const from = location.state?.from?.pathname || '/admin';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Subtle timeout to simulate/smooth out auth transition UX
-    setTimeout(() => {
-      if (login(username, password)) {
-        toast.success('Access Granted. Welcome, Admin.');
-        navigate(from, { replace: true });
-      } else {
-        toast.error('Invalid credentials. Access denied.');
+    try {
+        const { data, error } = await signIn(email, password);
+        
+        if (error) {
+            toast.error(error.message || 'Invalid credentials. Access denied.');
+        } else {
+            toast.success('Authentication successful.');
+            // Redirect based on profile after auth state is updated
+            // The useEffect will handle role-based redirection automatically
+        }
+    } catch (err) {
+        toast.error('An unexpected error occurred.');
+    } finally {
         setIsSubmitting(false);
-      }
-    }, 400);
+    }
   };
 
   return (
@@ -77,20 +93,20 @@ export default function AdminLogin() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             
-            {/* Username Input */}
+            {/* Email Input */}
             <div className="space-y-1.5">
-              <label htmlFor="username" className="text-xs font-bold text-slate-600 uppercase tracking-wider pl-1">
-                Identifier
+              <label htmlFor="email" className="text-xs font-bold text-slate-600 uppercase tracking-wider pl-1">
+                Email Address
               </label>
               <div className="relative group">
                 <HiOutlineUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
                 <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-white/90 border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
-                  placeholder="Enter admin username"
+                  placeholder="admin@nodeshare.app"
                   required
                 />
               </div>
@@ -144,8 +160,14 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* Footer Security Note */}
-          <div className="mt-8 pt-4 border-t border-slate-100 text-center">
+          {/* Footer Security Note & Signup */}
+          <div className="mt-8 pt-6 border-t border-slate-100 text-center space-y-3">
+            <p className="text-sm text-slate-500">
+                <Link to="/forgot-password" className="font-bold text-indigo-600 hover:text-indigo-700 hover:underline">Forgot your password?</Link>
+            </p>
+            <p className="text-sm text-slate-500">
+                Don't have access? <Link to="/signup" className="font-bold text-indigo-600 hover:text-indigo-700 hover:underline">Request an account</Link>
+            </p>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
               Protected by Academic Vault Security Protocol
             </p>

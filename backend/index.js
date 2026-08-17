@@ -12,6 +12,7 @@ const cors = require('cors');
 
 const resourceRoutes = require('./routes/resources');
 const videoRoutes = require('./routes/videos');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -59,6 +60,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/videos', videoRoutes);
 

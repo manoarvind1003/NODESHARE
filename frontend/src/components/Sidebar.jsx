@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAdmin } from '../context/AdminContext';
+import { useAuth } from '../context/AuthContext';
 import {
     HiOutlineHome,
     HiOutlineAcademicCap,
@@ -37,7 +37,7 @@ const moduleColors = [
 
 export default function Sidebar({ isOpen, onClose }) {
     const navigate = useNavigate();
-    const { isAdmin, logout } = useAdmin();
+    const { session, profile, signOut } = useAuth();
 
     const linkClass = ({ isActive }) =>
         `group flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 ${
@@ -49,8 +49,8 @@ export default function Sidebar({ isOpen, onClose }) {
     const iconClass = (isActive) => 
         `w-5 h-5 transition-transform duration-300 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-indigo-500 group-hover:scale-110'}`;
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        await signOut();
         navigate('/');
         if (onClose) onClose();
     };
@@ -171,7 +171,18 @@ export default function Sidebar({ isOpen, onClose }) {
                             )}
                         </NavLink>
 
-                        {isAdmin && (
+                        {profile?.role === 'super_admin' && (
+                            <NavLink to="/super-admin" className={linkClass} onClick={onClose}>
+                                {({ isActive }) => (
+                                    <>
+                                        <HiOutlineShieldCheck className={iconClass(isActive)} />
+                                        Super Admin Access
+                                    </>
+                                )}
+                            </NavLink>
+                        )}
+
+                        {session && (
                             <button
                                 onClick={handleLogout}
                                 className="w-full mt-4 group flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-rose-500 hover:bg-gradient-to-r hover:from-rose-50 hover:to-red-50 hover:text-rose-600 transition-all duration-300 border border-transparent hover:border-rose-100"
