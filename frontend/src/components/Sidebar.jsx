@@ -80,7 +80,7 @@ export default function Sidebar({ isOpen, onClose }) {
                     <div className="flex items-center justify-between p-6 border-b border-slate-100/80">
                         <div className="flex items-center gap-3">
                             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 flex items-center justify-center shadow-inner p-2 group hover:scale-105 transition-transform">
-                                <img src="favicon.png" alt="Logo" className="w-full h-full object-contain" />
+                                <img src="./public/favicon.png" alt="Logo" className="w-full h-full object-contain" />
                             </div>
                             <div>
                                 <h1 className="text-lg font-black uppercase tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
